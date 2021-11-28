@@ -1,0 +1,50 @@
+[
+  {
+    "consumableType": "Food",
+    "name": "Salmon",
+    "notes": "sockeye",
+    "price": 12.45,
+    "mass": 908.0,
+    "expiryDate": "2021-10-26T23:59"
+  },
+  {
+    "consumableType": "Food",
+    "name": "chicken",
+    "notes": "legs",
+    "price": 200.0,
+    "mass": 10000.0,
+    "expiryDate": "2021-10-30T23:59"
+  },
+  {
+    "consumableType": "Drink",
+    "name": "milk",
+    "notes": "2%",
+    "price": 4.99,
+    "mass": 4000.0,
+    "expiryDate": "2021-11-02T23:59"
+  },
+  {
+    "consumableType": "Drink",
+    "name": "Orange Juice",
+    "notes": "Lots of Pulp",
+    "price": 5.99,
+    "mass": 1500.0,
+    "expiryDate": "2021-11-17T04:30"
+  },
+  {
+    "consumableType": "Drink",
+    "name": "Iced Tea",
+    "notes": "raspberrt",
+    "price": 4.49,
+    "mass": 1500.0,
+    "expiryDate": "2021-11-29T23:59"
+  },
+  {
+    "consumableType": "Drink",
+    "name": "Malibu",
+    "notes": "Alchohol - 19+",
+    "price": 26.49,
+    "mass": 1170.0,
+    "expiryDate": "2022-02-11T00:00"
+  }
+]
