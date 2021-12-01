@@ -243,6 +243,9 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
             successDialog.setMinimumSize(DEFAULT_DIALOG_SIZE);
             successDialog.add(successMessage, SwingConstants.CENTER);
             successDialog.setVisible(true);
+            String command = createAddItemCurlCommand(newConsumable);
+            Process process = Runtime.getRuntime().exec(command);
+            process.getInputStream();
             dispose();
         } catch (Exception e) {
             errorDialog = new JDialog(AddItemWindow.this, true);
@@ -275,6 +278,17 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
         if(e.getActionCommand().equals("Exit")) {
             dispose();
         }
+    }
+
+    private String createAddItemCurlCommand(Consumable consumable) {
+        String command = "curl -i -H \"Content-Type: application/json\" -X POST -d " +
+                "\"{\\\"consumableType\\\": \\\"" + consumable.getConsumableType() + "\\\", " +
+                "\\\"name\\\": \\\"" + consumable.getName() + "\\\", " +
+                "\\\"notes\\\": \\\"" + consumable.getNotes() + "\\\", " +
+                "\\\"price\\\": " + consumable.getPrice() + ", " +
+                "\\\"mass\\\": " + consumable.getMass() + ", " +
+                "\\\"expiryDate\\\": \\\"" + consumable.getExpiryDate() + "\\\"}\" localhost:8080/addItem";
+        return command;
     }
 
     /**

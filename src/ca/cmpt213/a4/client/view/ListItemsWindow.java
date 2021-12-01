@@ -410,6 +410,9 @@ public class ListItemsWindow extends JDialog implements ActionListener {
             if(index < 1 || index > listSize) {
                 throw new IllegalArgumentException();
             } else {
+                Process process = Runtime.getRuntime()
+                        .exec(createRemoveItemCurlCommand(consumablesManager.getConsumableNameAtIndex(index-1)));
+                process.getInputStream();
                 consumablesManager.deleteConsumable(index-1);
                 isValidIndex = true;
             }
@@ -431,6 +434,13 @@ public class ListItemsWindow extends JDialog implements ActionListener {
             validRemovalDialog.setVisible(true);
             removeItemDialog.dispose();
         }
+    }
+
+    /**
+     * method to create curl command for removing an item.
+     */
+    private String createRemoveItemCurlCommand(String itemName) {
+        return "curl -i -H \"Content-Type: application/json\" -X POST localhost:8080/removeItem/" + itemName;
     }
 
     /**
