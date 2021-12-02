@@ -232,6 +232,7 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
                 } else {
                     ((Drink) newConsumable).setVolume(parsedMass);
                 }
+                newConsumable.setMass(parsedMass);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException();
             }

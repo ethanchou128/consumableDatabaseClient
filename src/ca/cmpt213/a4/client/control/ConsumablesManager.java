@@ -82,6 +82,16 @@ public class ConsumablesManager {
     }
 
     /**
+     * setter for arrayList
+     */
+    public void setConsumablesList() throws IOException{
+        //TODO: finish loading function from server (no fucking clue on how to do it)
+        List<Consumable> serverArrayList = new ArrayList<>();
+        Process process = Runtime.getRuntime().exec("curl -i -H \"Content-Type: application/json\" -X GET localhost:8080/load");
+        System.out.println(process.getInputStream());
+    }
+
+    /**
      * method to add the food to the array list
      * @param consumable the food item that is created in the menu to be passed in and added
      */

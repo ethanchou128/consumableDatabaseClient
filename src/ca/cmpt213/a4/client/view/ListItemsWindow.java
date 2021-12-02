@@ -72,7 +72,11 @@ public class ListItemsWindow extends JDialog implements ActionListener {
 
         @Override
         public void windowClosing(WindowEvent e) {
-            quitProgram();
+            try {
+                quitProgram();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
         @Override
@@ -108,14 +112,19 @@ public class ListItemsWindow extends JDialog implements ActionListener {
     private boolean isListingNonExpired;
     private boolean isListingExpiringIn7Days;
 
-    private final String fileName;
-    private final boolean fileExists;
+//    private final String fileName;
+//    private final boolean fileExists;
 
     //TODO: add title to window
     public ListItemsWindow() {
 
-        fileName = "text.json";
-        fileExists = ConsumablesManager.loadFile(fileName);
+//        fileName = "text.json";
+//        fileExists = ConsumablesManager.loadFile(fileName);
+        try {
+            consumablesManager.setConsumablesList();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
         mainFrame.setMinimumSize(new Dimension(600, 400));
         mainFrame.setPreferredSize(new Dimension(800, 800));
@@ -199,7 +208,11 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         } else if (e.getActionCommand().equals("Cancel")) {
             dispose();
         } else if(e.getActionCommand().equals("Quit")) {
-            quitProgram();
+            try {
+                quitProgram();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -492,15 +505,18 @@ public class ListItemsWindow extends JDialog implements ActionListener {
     /**
      * method to quit program
      */
-    private void quitProgram() {
+    private void quitProgram() throws IOException {
         try {
             //if the file does not exist, as determined by the boolean above
             //write a new file. if it does exist, overwrite the passed in file.
-            if (!fileExists) {
-                ConsumablesManager.writeFile("newFile.json");
-            } else {
-                ConsumablesManager.writeFile(fileName);
-            }
+//            if (!fileExists) {
+//                ConsumablesManager.writeFile("newFile.json");
+//            } else {
+//                ConsumablesManager.writeFile(fileName);
+//            }
+            Process process = Runtime.getRuntime()
+                    .exec("curl -i -H \"Content-Type: application/json\" -X GET localhost:8080/exit");
+            process.getInputStream();
         } catch (IOException file) {
             System.out.println("I don't know I got here.");
         }

@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "consumableType": "Food",
+    "name": "sadf",
+    "notes": "qdwrf",
+    "price": 123.0,
+    "mass": 12344.0,
+    "expiryDate": "2021-12-11T01:00"
+  }
+]
