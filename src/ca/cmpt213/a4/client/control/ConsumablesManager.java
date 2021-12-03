@@ -81,149 +81,57 @@ public class ConsumablesManager {
         return consumableList;
     }
 
+    public void executeCommandToServer(String itemFilter) {
+        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new TypeAdapter<LocalDateTime>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter,
+                                      LocalDateTime localDateTime) throws IOException {
+                        jsonWriter.value(localDateTime.toString());
+                    }
+                    @Override
+                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                        return LocalDateTime.parse(jsonReader.nextString());
+                    }
+                }).setPrettyPrinting().create();
+        try {
+            String serverJSONString = "";
+            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/" + itemFilter);
+            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String readNull;
+            while ((readNull = bufferedReader.readLine()) != null) {
+                serverJSONString += readNull;
+            }
+            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
+            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
+            repairConsumableList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadItemsFromServer() throws IOException {
+        executeCommandToServer("load");
+    }
+
     /**
      * setter for arrayList
      */
-    public void getAllItemsFromServer() throws IOException{
-        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-                new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter,
-                                      LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                }).setPrettyPrinting().create();
-        try {
-            String serverJSONString = "";
-            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/load");
-            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String readNull;
-            while ((readNull = bufferedReader.readLine()) != null) {
-                serverJSONString += readNull;
-            }
-            System.out.println(serverJSONString);
-            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
-            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
-            repairConsumableList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void getAllItemsFromServer() throws IOException {
+        executeCommandToServer("listAll");
     }
 
     public void getExpiredConsumablesFromServer() throws IOException {
-        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-                new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter,
-                                      LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                }).setPrettyPrinting().create();
-        try {
-            String serverJSONString = "";
-            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/listExpired");
-            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String readNull;
-            while ((readNull = bufferedReader.readLine()) != null) {
-                serverJSONString += readNull;
-            }
-            System.out.println(serverJSONString);
-            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
-            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
-            repairConsumableList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        executeCommandToServer("listExpired");
     }
 
     public void getNonExpiredConsumablesFromServer() throws IOException {
-        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-                new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter,
-                                      LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                }).setPrettyPrinting().create();
-        try {
-            String serverJSONString = "";
-            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/listNonExpired");
-            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String readNull;
-            while ((readNull = bufferedReader.readLine()) != null) {
-                serverJSONString += readNull;
-            }
-            System.out.println(serverJSONString);
-            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
-            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
-            repairConsumableList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        executeCommandToServer("listNonExpired");
     }
 
     public void getConsumablesExpiringIn7DaysFromServer() throws IOException {
-        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-                new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter,
-                                      LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                }).setPrettyPrinting().create();
-        try {
-            String serverJSONString = "";
-            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/listExpiringIn7Days");
-            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String readNull;
-            while ((readNull = bufferedReader.readLine()) != null) {
-                serverJSONString += readNull;
-            }
-            System.out.println(serverJSONString);
-            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
-            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
-            repairConsumableList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    /**
-     * method to add the food to the array list
-     * @param consumable the food item that is created in the menu to be passed in and added
-     */
-    public void addConsumable(Consumable consumable) {
-        consumableList.add(consumable);
-    }
-
-    /**
-     * method to delete the food from array list
-     * @param index the index/food number of the item thats passed in to be removed
-     */
-    public void deleteConsumable(int index) {
-        consumableList.remove(index);
+        executeCommandToServer("listExpiringIn7Days");
     }
 
     /**
@@ -232,10 +140,6 @@ public class ConsumablesManager {
      */
     public int getListSize() {
         return consumableList.size();
-    }
-
-    public String getConsumableNameAtIndex(int index) {
-        return consumableList.get(index).getName();
     }
 
     /**
@@ -259,80 +163,6 @@ public class ConsumablesManager {
                 "\nPrice: " + consumable.getPrice() +
                 "\n" + stringifyMassUnits(consumable) +
                 "\nExpiry Date: " + consumable.formatExpiryDate(consumable.getExpiryDate());
-    }
-
-
-    /**
-     * method to return whether there is a need for a new file to be written
-     * if the file(name) passed in cannot be read, it returns false which
-     * indicates that a brand new file is written after program is exited.
-     * @param filename the file name passed into the readfile method.
-     * @return whether file is able to be read or not.
-     */
-    public static boolean loadFile(String filename) {
-        try {
-            String fileInput = "./" + filename;
-            readFile(fileInput);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * method to read in the .json file accordingly
-     * @param fileName the filename passed in
-     */
-    public static void readFile(String fileName) {
-        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-                new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter,
-                                      LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                }).setPrettyPrinting().create();
-
-        try {
-            File inputFile = new File(fileName);
-            Reader consumableReader = new FileReader(inputFile);
-            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
-            unfilteredConsumableList = myGson.fromJson(consumableReader, listType);
-            repairConsumableList();
-            consumableReader.close();
-        } catch (Exception e) {
-            System.out.println("File not found");
-        }
-    }
-
-    /**
-     * method that writes a new file (or overrides the passed in file)
-     * @param outputFileName the file that is overwritten or created; as per the switch
-     *                       statement, if a new file is written it is named newFile.json by
-     *                       default.
-     * @throws IOException program should never have to throw this, as a file will always be written to.
-     */
-    public static void writeFile(String outputFileName) throws IOException{
-        FileWriter fileWriter = new FileWriter(outputFileName);
-        separateConsumableList();
-        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-                new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter,
-                                      LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                }).setPrettyPrinting().create();
-        myGson.toJson(unfilteredConsumableList, fileWriter);
-        fileWriter.close();
     }
 
     //helper methods used to parse the content into a json file accordingly.

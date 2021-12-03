@@ -80,7 +80,6 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
     private FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
     private LocalDateTime expiryDate;
 
-    //TODO: add title to window
     public AddItemWindow() {
         dialog = new JDialog(AddItemWindow.this, true);
         dialog.setTitle("Add Item");
@@ -238,7 +237,6 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
             }
 
             newConsumable.setExpiryDate(expiryDate);
-            consumablesManager.addConsumable(newConsumable);
 
             successDialog = new JDialog(AddItemWindow.this, true);
             successDialog.setMinimumSize(DEFAULT_DIALOG_SIZE);
@@ -282,14 +280,13 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
     }
 
     private String createAddItemCurlCommand(Consumable consumable) {
-        String command = "curl -i -H \"Content-Type: application/json\" -X POST -d " +
-                "\"{\\\"consumableType\\\": \\\"" + consumable.getConsumableType() + "\\\", " +
-                "\\\"name\\\": \\\"" + consumable.getName() + "\\\", " +
-                "\\\"notes\\\": \\\"" + consumable.getNotes() + "\\\", " +
-                "\\\"price\\\": " + consumable.getPrice() + ", " +
-                "\\\"mass\\\": " + consumable.getMass() + ", " +
-                "\\\"expiryDate\\\": \\\"" + consumable.getExpiryDate() + "\\\"}\" localhost:8080/addItem";
-        return command;
+       return "curl -i -H \"Content-Type: application/json\" -X POST -d " +
+               "\"{\\\"consumableType\\\": \\\"" + consumable.getConsumableType() + "\\\", " +
+               "\\\"name\\\": \\\"" + consumable.getName() + "\\\", " +
+               "\\\"notes\\\": \\\"" + consumable.getNotes() + "\\\", " +
+               "\\\"price\\\": " + consumable.getPrice() + ", " +
+               "\\\"mass\\\": " + consumable.getMass() + ", " +
+               "\\\"expiryDate\\\": \\\"" + consumable.getExpiryDate() + "\\\"}\" localhost:8080/addItem";
     }
 
     /**

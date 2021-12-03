@@ -108,17 +108,6 @@ public class Consumable implements Comparable<Consumable> {
     }
 
     /**
-     * method to set the date and time; converted using the LocalDateTime object
-     * numbers that are input are ensured valid by the textMenu code blocks.
-     * @param year expiry year passed in
-     * @param month expiry month passed in
-     * @param day expiry day passed in
-     */
-    public void convertDateTime(int year, int month, int day) {
-        this.expiryDate = LocalDateTime.of(year, month, day, 23, 59);
-    }
-
-    /**
      * format expiry date to cleaner, userFriendly interpretation
      * @param expiryDate expiry date stored by food object
      * @return formatted date

@@ -107,21 +107,14 @@ public class ListItemsWindow extends JDialog implements ActionListener {
 
     private final ConsumablesManager consumablesManager = new ConsumablesManager();
 
-    private boolean isListingAll;
+    private boolean isListingAll = true;
     private boolean isListingExpired;
     private boolean isListingNonExpired;
     private boolean isListingExpiringIn7Days;
 
-//    private final String fileName;
-//    private final boolean fileExists;
-
-    //TODO: add title to window
     public ListItemsWindow() {
-
-//        fileName = "text.json";
-//        fileExists = ConsumablesManager.loadFile(fileName);
         try {
-            consumablesManager.getAllItemsFromServer();
+            consumablesManager.loadItemsFromServer();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -374,7 +367,6 @@ public class ListItemsWindow extends JDialog implements ActionListener {
                 Process process = Runtime.getRuntime()
                         .exec(createRemoveItemCurlCommand(index-1));
                 process.getInputStream();
-                consumablesManager.deleteConsumable(index-1);
             }
         } catch (Exception e) {
             removeVerificationDialog.setMinimumSize(DEFAULT_DIALOG_SIZE);
