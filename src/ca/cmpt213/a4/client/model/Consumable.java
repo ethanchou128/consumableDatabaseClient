@@ -121,6 +121,20 @@ public class Consumable implements Comparable<Consumable> {
     }
 
     /**
+     * toString override method
+     * @return better detailed string of class contents
+     */
+    @Override
+    public String toString() {
+        return "Food Type: " + getConsumableType() +
+                "\nConsumable name: " + getName() +
+                "\nNotes: " + getNotes() +
+                "\nPrice: " + getPrice() +
+                "\nMass: " + getMass() +
+                "\nExpiry Date: " + formatExpiryDate(getExpiryDate());
+    }
+
+    /**
      * method that is used in the Comparable interface; sorts the consumables by expiry dates
      * @param c the consumable that has its expiry compared to the calling object's expiry date
      * @return 0 if theyre equal, 1 if the calling object is after expiry date, -1 if

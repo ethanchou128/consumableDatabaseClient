@@ -23,6 +23,15 @@ public class Food extends Consumable {
     }
 
     /**
+     * toString override method
+     * @return better detailed string of class contents
+     */
+    @Override
+    public String toString() {
+        return "This is a Food item.";
+    }
+
+    /**
      * empty constructor so no one else can instantiate it
      */
     public Food() {

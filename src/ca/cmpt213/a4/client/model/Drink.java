@@ -23,6 +23,15 @@ public class Drink extends Consumable {
     }
 
     /**
+     * toString override method
+     * @return better detailed string of class contents
+     */
+    @Override
+    public String toString() {
+        return "This is a Drink item.";
+    }
+
+    /**
      * empty constructor so no one else can instantiate it
      */
     public Drink() {
