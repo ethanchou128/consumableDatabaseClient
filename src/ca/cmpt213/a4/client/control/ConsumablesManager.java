@@ -215,6 +215,7 @@ public class ConsumablesManager {
             newConsumable.setName(consumableName);
             newConsumable.setNotes(consumableNotes);
             newConsumable.setPrice(consumablePrice);
+            newConsumable.setMass(consumableMass);
             newConsumable.setExpiryDate(expiryDate);
             consumableList.add(newConsumable);
         }

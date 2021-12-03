@@ -136,6 +136,8 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         addButton.addActionListener(this);
         deleteButton.addActionListener(this);
         quitButton.addActionListener(this);
+        confirmRemoveButton.addActionListener(this);
+        cancelRemoveButton.addActionListener(this);
 
         allItemButtonPanel.add(allButton);
         expiredItemButtonPanel.add(expiredButton);
@@ -267,7 +269,6 @@ public class ListItemsWindow extends JDialog implements ActionListener {
     private void listItems() {
         clearItemListings();
         int counter = 1;
-        Collections.sort(consumablesManager.getConsumablesList());
         for(Consumable c : consumablesManager.getConsumablesList()) {
             String output = "";
             output += "Item " + counter + "\n";
@@ -333,9 +334,6 @@ public class ListItemsWindow extends JDialog implements ActionListener {
 
         removeItemDialog.add(mainRemoveItemPanel);
 
-        confirmRemoveButton.addActionListener(this);
-        cancelRemoveButton.addActionListener(this);
-
         confirmRemovePanel.add(confirmRemoveButton);
         exitDialogPanel.add(cancelRemoveButton);
 
@@ -364,9 +362,6 @@ public class ListItemsWindow extends JDialog implements ActionListener {
                 throw new IllegalArgumentException();
             } else {
                 isValidIndex = true;
-                Process process = Runtime.getRuntime()
-                        .exec(createRemoveItemCurlCommand(index-1));
-                process.getInputStream();
             }
         } catch (Exception e) {
             removeVerificationDialog.setMinimumSize(DEFAULT_DIALOG_SIZE);
@@ -376,6 +371,13 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
 
         if (isValidIndex) {
+            try {
+                Process process = Runtime.getRuntime()
+                        .exec(createRemoveItemCurlCommand(index - 1));
+                process.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             JDialog validRemovalDialog = new JDialog(removeItemDialog, true);
             validRemovalDialog.setMinimumSize(DEFAULT_DIALOG_SIZE);
             validRemovalDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -384,6 +386,7 @@ public class ListItemsWindow extends JDialog implements ActionListener {
                     SwingConstants.CENTER);
             validRemovalDialog.add(removeSuccess);
             validRemovalDialog.setVisible(true);
+            validRemovalDialog.dispose();
             removeItemDialog.dispose();
         }
     }
@@ -408,6 +411,7 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         } else {
             retrieveItemsExpiringIn7DaysFromServer();
         }
+        listItems();
     }
 
     /**
