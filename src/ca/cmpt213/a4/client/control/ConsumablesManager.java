@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * "manager" class that handles all modifications of the list of consumables
+ * and the list's information.
+ */
 public class ConsumablesManager {
     private static List<Consumable> consumableList = new ArrayList<>();
     private static List<Consumable> unfilteredConsumableList = new ArrayList<>();

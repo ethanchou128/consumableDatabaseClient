@@ -1,5 +1,8 @@
 package ca.cmpt213.a4.client.model;
 
+/**
+ * drink subclass of the consumable
+ */
 public class Drink extends Consumable {
     private double volume;
 

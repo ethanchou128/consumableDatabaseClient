@@ -15,6 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 
+/**
+ * class that contains the window that allows the user to add an item;
+ * launched from the ListItemsWindow
+ */
 public class AddItemWindow extends JDialog implements ActionListener, DateTimeChangeListener {
     JDialog dialog;
     JDialog errorDialog;

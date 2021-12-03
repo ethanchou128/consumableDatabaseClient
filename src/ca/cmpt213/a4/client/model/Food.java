@@ -1,5 +1,8 @@
 package ca.cmpt213.a4.client.model;
 
+/**
+ * food subclass of the consumable
+ */
 public class Food extends Consumable {
     private double weight;
 

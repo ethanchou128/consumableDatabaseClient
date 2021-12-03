@@ -3,6 +3,9 @@ package ca.cmpt213.a4.client.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * object that stores consumables and the corresponding traits/fields.
+ */
 public class Consumable implements Comparable<Consumable> {
     private String consumableType;
     private String name;

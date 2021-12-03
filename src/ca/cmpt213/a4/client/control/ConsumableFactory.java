@@ -4,6 +4,9 @@ import ca.cmpt213.a4.client.model.Consumable;
 import ca.cmpt213.a4.client.model.Drink;
 import ca.cmpt213.a4.client.model.Food;
 
+/**
+ * class used to determine subclass of consumables
+ */
 public class ConsumableFactory {
     /**
      * "factory method" used to determine the subclass of a consumable that

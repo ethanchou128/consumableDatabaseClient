@@ -16,6 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
+/**
+ * "main" window that lists all consumables according to filter chosen by
+ * user; also contains the delete and add buttons and the dialog that is
+ * created to allow the user to delete an item is also stored within this class;
+ */
 public class ListItemsWindow extends JDialog implements ActionListener {
     JFrame mainFrame = new JFrame("No Mold = Gold Database");
     JTextArea itemListArea = new JTextArea();
