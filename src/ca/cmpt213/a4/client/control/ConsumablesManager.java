@@ -81,6 +81,12 @@ public class ConsumablesManager {
         return consumableList;
     }
 
+    /**
+     * helper method to execute commands from the server according to the specified filter requested by the
+     * user on the client GUI with the buttons at the top of the ListItemsWindow
+     * @param itemFilter the filter at the end of the curl command to be appended to the
+     *                   end of the command and executed.
+     */
     public void executeCommandToServer(String itemFilter) {
         Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
                 new TypeAdapter<LocalDateTime>() {
@@ -96,7 +102,8 @@ public class ConsumablesManager {
                 }).setPrettyPrinting().create();
         try {
             String serverJSONString = "";
-            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/" + itemFilter);
+            String curlCommand = "curl -H \"Content-Type: application/json\" -X GET localhost:8080/" + itemFilter;
+            Process process = Runtime.getRuntime().exec(curlCommand);
             InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String readNull;
@@ -111,25 +118,46 @@ public class ConsumablesManager {
         }
     }
 
+    /**
+     * method to load all the items from the server on startup
+     * @throws IOException
+     */
     public void loadItemsFromServer() throws IOException {
         executeCommandToServer("load");
     }
 
     /**
-     * setter for arrayList
+     * method to get an arraylist of all items no matter the expiry date
+     * (soonest expiry dates will appear first)
+     * @throws IOException
      */
     public void getAllItemsFromServer() throws IOException {
         executeCommandToServer("listAll");
     }
 
+    /**
+     * method to get array list of all expired items
+     * (soonest expiry dates will appear first)
+     * @throws IOException
+     */
     public void getExpiredConsumablesFromServer() throws IOException {
         executeCommandToServer("listExpired");
     }
 
+    /**
+     * method to get arraylist of all non-expired items
+     * (soonest expiry dates will appear first)
+     * @throws IOException
+     */
     public void getNonExpiredConsumablesFromServer() throws IOException {
         executeCommandToServer("listNonExpired");
     }
 
+    /**
+     * method to get arraylist of all items expiring in <=7 days
+     * (soonest expiry dates will appear first)
+     * @throws IOException
+     */
     public void getConsumablesExpiringIn7DaysFromServer() throws IOException {
         executeCommandToServer("listExpiringIn7Days");
     }
@@ -165,31 +193,7 @@ public class ConsumablesManager {
                 "\nExpiry Date: " + consumable.formatExpiryDate(consumable.getExpiryDate());
     }
 
-    //helper methods used to parse the content into a json file accordingly.
-    /**
-     * helper method used to help the writeFile write the Json file accordingly.
-     */
-    public static void separateConsumableList(){
-        unfilteredConsumableList.clear();
-        for(Consumable c : consumableList) {
-            String consumableType = c.getConsumableType();
-            String consumableName = c.getName();
-            String consumableNotes = c.getNotes();
-            double consumablePrice = c.getPrice();
-            double consumableMass = getMass(c);
-            LocalDateTime expiryDate = c.getExpiryDate();
-
-            Consumable separatedItem = new Consumable();
-            separatedItem.setConsumableType(consumableType);
-            separatedItem.setName(consumableName);
-            separatedItem.setNotes(consumableNotes);
-            separatedItem.setPrice(consumablePrice);
-            separatedItem.setMass(consumableMass);
-            separatedItem.setExpiryDate(expiryDate);
-            unfilteredConsumableList.add(separatedItem);
-        }
-    }
-
+    //helper method used to parse the content into a json file accordingly.
     /**
      * helper method used to help the readFile parse the information into a Json file
      * and split the items into the subclasses.

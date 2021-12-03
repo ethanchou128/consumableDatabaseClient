@@ -279,6 +279,14 @@ public class AddItemWindow extends JDialog implements ActionListener, DateTimeCh
         }
     }
 
+    /**
+     * helper method to generate a curl command for a new item
+     * which is executed to add an item to the array list in the server
+     * @param consumable the consumable the user has inputted to add through
+     *                   the AddItemsWindow which the data is extracted and placed
+     *                   in the curl command accordingly
+     * @return the curl command executed above; in a String object.
+     */
     private String createAddItemCurlCommand(Consumable consumable) {
        return "curl -i -H \"Content-Type: application/json\" -X POST -d " +
                "\"{\\\"consumableType\\\": \\\"" + consumable.getConsumableType() + "\\\", " +

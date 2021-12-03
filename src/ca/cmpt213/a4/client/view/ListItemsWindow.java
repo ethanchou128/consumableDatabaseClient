@@ -211,6 +211,10 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * method to get an arraylist with all items regardless of expiry date
+     * and set it in the consumable manager.
+     */
     private void retrieveAllItemsFromServer() {
         isListingAll = true;
         isListingExpired = false;
@@ -224,6 +228,10 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * method to get an arraylist with all expired items
+     * and set it in the consumable manager.
+     */
     private void retrieveExpiredItemsFromServer() {
         isListingAll = false;
         isListingExpired = true;
@@ -237,6 +245,10 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * method to get an arraylist with all non-expired items
+     * and set it in the consumable manager.
+     */
     private void retrieveNonExpiredItemsFromServer() {
         isListingAll = false;
         isListingExpired = false;
@@ -250,6 +262,10 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * method to get an arraylist with all items expiring in
+     * 7 days and set it in the consumable manager.
+     */
     private void retrieveItemsExpiringIn7DaysFromServer() {
         isListingAll = false;
         isListingExpired = false;
