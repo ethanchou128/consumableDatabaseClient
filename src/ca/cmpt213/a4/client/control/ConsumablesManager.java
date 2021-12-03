@@ -84,12 +84,131 @@ public class ConsumablesManager {
     /**
      * setter for arrayList
      */
-    public void setConsumablesList() throws IOException{
-        //TODO: finish loading function from server (no fucking clue on how to do it)
-        List<Consumable> serverArrayList = new ArrayList<>();
-        Process process = Runtime.getRuntime().exec("curl -i -H \"Content-Type: application/json\" -X GET localhost:8080/load");
-        System.out.println(process.getInputStream());
+    public void getAllItemsFromServer() throws IOException{
+        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new TypeAdapter<LocalDateTime>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter,
+                                      LocalDateTime localDateTime) throws IOException {
+                        jsonWriter.value(localDateTime.toString());
+                    }
+                    @Override
+                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                        return LocalDateTime.parse(jsonReader.nextString());
+                    }
+                }).setPrettyPrinting().create();
+        try {
+            String serverJSONString = "";
+            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/load");
+            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String readNull;
+            while ((readNull = bufferedReader.readLine()) != null) {
+                serverJSONString += readNull;
+            }
+            System.out.println(serverJSONString);
+            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
+            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
+            repairConsumableList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    public void getExpiredConsumablesFromServer() throws IOException {
+        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new TypeAdapter<LocalDateTime>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter,
+                                      LocalDateTime localDateTime) throws IOException {
+                        jsonWriter.value(localDateTime.toString());
+                    }
+                    @Override
+                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                        return LocalDateTime.parse(jsonReader.nextString());
+                    }
+                }).setPrettyPrinting().create();
+        try {
+            String serverJSONString = "";
+            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/listExpired");
+            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String readNull;
+            while ((readNull = bufferedReader.readLine()) != null) {
+                serverJSONString += readNull;
+            }
+            System.out.println(serverJSONString);
+            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
+            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
+            repairConsumableList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getNonExpiredConsumablesFromServer() throws IOException {
+        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new TypeAdapter<LocalDateTime>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter,
+                                      LocalDateTime localDateTime) throws IOException {
+                        jsonWriter.value(localDateTime.toString());
+                    }
+                    @Override
+                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                        return LocalDateTime.parse(jsonReader.nextString());
+                    }
+                }).setPrettyPrinting().create();
+        try {
+            String serverJSONString = "";
+            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/listNonExpired");
+            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String readNull;
+            while ((readNull = bufferedReader.readLine()) != null) {
+                serverJSONString += readNull;
+            }
+            System.out.println(serverJSONString);
+            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
+            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
+            repairConsumableList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getConsumablesExpiringIn7DaysFromServer() throws IOException {
+        Gson myGson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new TypeAdapter<LocalDateTime>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter,
+                                      LocalDateTime localDateTime) throws IOException {
+                        jsonWriter.value(localDateTime.toString());
+                    }
+                    @Override
+                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                        return LocalDateTime.parse(jsonReader.nextString());
+                    }
+                }).setPrettyPrinting().create();
+        try {
+            String serverJSONString = "";
+            Process process = Runtime.getRuntime().exec("curl -H \"Content-Type: application/json\" -X GET localhost:8080/listExpiringIn7Days");
+            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String readNull;
+            while ((readNull = bufferedReader.readLine()) != null) {
+                serverJSONString += readNull;
+            }
+            System.out.println(serverJSONString);
+            Type listType = new TypeToken<ArrayList<Consumable>>(){}.getType();
+            unfilteredConsumableList = myGson.fromJson(serverJSONString, listType);
+            repairConsumableList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     /**
      * method to add the food to the array list
@@ -246,6 +365,7 @@ public class ConsumablesManager {
      * and split the items into the subclasses.
      */
     public static void repairConsumableList() {
+        consumableList.clear();
         for(Consumable c : unfilteredConsumableList) {
             String consumableType = c.getConsumableType();
             String consumableName = c.getName();

@@ -121,7 +121,7 @@ public class ListItemsWindow extends JDialog implements ActionListener {
 //        fileName = "text.json";
 //        fileExists = ConsumablesManager.loadFile(fileName);
         try {
-            consumablesManager.setConsumablesList();
+            consumablesManager.getAllItemsFromServer();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -176,7 +176,7 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         mainFrame.setVisible(true);
 
         //this is the default setting if it is the first time the user loads the program
-        listAllItems();
+        listItems();
     }
 
     /**
@@ -187,16 +187,16 @@ public class ListItemsWindow extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("All")) {
             clearItemListings();
-            listAllItems();
+            retrieveAllItemsFromServer();
         } else if (e.getActionCommand().equals("Expired")) {
             clearItemListings();
-            listExpiredItems();
+            retrieveExpiredItemsFromServer();
         } else if (e.getActionCommand().equals("Non-Expired")) {
             clearItemListings();
-            listNonExpiredItems();
+            retrieveNonExpiredItemsFromServer();
         } else if (e.getActionCommand().equals("Expires within 7 Days")){
             clearItemListings();
-            listItemsExpiringIn7Days();
+            retrieveItemsExpiringIn7DaysFromServer();
         } else if (e.getActionCommand().equals("Add Item")) {
             new AddItemWindow();
             updateListViewAfterRemoving();
@@ -216,14 +216,62 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
     }
 
-    /**
-     * method to list all items in the textarea regardless if expired or not
-     */
-    private void listAllItems() {
+    private void retrieveAllItemsFromServer() {
         isListingAll = true;
         isListingExpired = false;
         isListingNonExpired = false;
         isListingExpiringIn7Days = false;
+        try {
+            consumablesManager.getAllItemsFromServer();
+            listItems();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void retrieveExpiredItemsFromServer() {
+        isListingAll = false;
+        isListingExpired = true;
+        isListingNonExpired = false;
+        isListingExpiringIn7Days = false;
+        try {
+            consumablesManager.getExpiredConsumablesFromServer();
+            listItems();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void retrieveNonExpiredItemsFromServer() {
+        isListingAll = false;
+        isListingExpired = false;
+        isListingNonExpired = true;
+        isListingExpiringIn7Days = false;
+        try {
+            consumablesManager.getNonExpiredConsumablesFromServer();
+            listItems();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void retrieveItemsExpiringIn7DaysFromServer() {
+        isListingAll = false;
+        isListingExpired = false;
+        isListingNonExpired = false;
+        isListingExpiringIn7Days = true;
+        try {
+            consumablesManager.getConsumablesExpiringIn7DaysFromServer();
+            listItems();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * method to list all items currently in the filtered lists from server
+     */
+    private void listItems() {
         clearItemListings();
         int counter = 1;
         Collections.sort(consumablesManager.getConsumablesList());
@@ -246,107 +294,6 @@ public class ListItemsWindow extends JDialog implements ActionListener {
         }
         if(consumablesManager.getListSize() == 0) {
             emptyLabel = new JLabel("There are no items in the database.");
-            mainItemListingPanel.add(emptyLabel);
-        }
-        returnToTop();
-    }
-
-    /**
-     * method to list only the expired items in the database.
-     */
-    private void listExpiredItems() {
-        isListingAll = false;
-        isListingExpired = true;
-        isListingNonExpired = false;
-        isListingExpiringIn7Days = false;
-        clearItemListings();
-        LocalDateTime now = LocalDateTime.now();
-        Collections.sort(consumablesManager.getConsumablesList());
-        int counter = 1;
-        for(Consumable c : consumablesManager.getConsumablesList()) {
-            boolean isExpired = c.getExpiryDate().isBefore(now);
-            if(isExpired) {
-                String output = "";
-                output += "Item " + counter + "\n";
-                output += consumablesManager.toString(c);
-                long daysBetween = ChronoUnit.DAYS.between(LocalDateTime.now(), c.getExpiryDate());
-                output += "\nThis item has been expired for " + daysBetween * (-1) + " days.";
-                createNewPanelForList(output);
-                counter++;
-            }
-        }
-        if(counter == 1) {
-            emptyLabel = new JLabel("There are no expired items in the database.");
-            mainItemListingPanel.add(emptyLabel);
-        }
-        returnToTop();
-    }
-
-    /**
-     * method to list all non-expired items in the database
-     */
-    private void listNonExpiredItems() {
-        isListingAll = false;
-        isListingExpired = false;
-        isListingNonExpired = true;
-        isListingExpiringIn7Days = false;
-        clearItemListings();
-        LocalDateTime now = LocalDateTime.now();
-        Collections.sort(consumablesManager.getConsumablesList());
-        int counter = 1;
-        for(Consumable c : consumablesManager.getConsumablesList()) {
-            boolean isNotExpired = c.getExpiryDate().isAfter(now);
-            if(isNotExpired) {
-                String output = "";
-                output += "Item " + counter + "\n";
-                output += consumablesManager.toString(c);
-                long daysBetween = ChronoUnit.DAYS.between(LocalDateTime.now(), c.getExpiryDate());
-                if(daysBetween == 0) {
-                    output += "\nThis item expires today.\n";
-                } else {
-                    output += "\nThere is " + daysBetween + " days until this item expires.\n";
-                }
-                createNewPanelForList(output);
-                counter++;
-            }
-        }
-        if(counter == 1) {
-            emptyLabel = new JLabel("There are no items in the database that aren't expired.");
-            mainItemListingPanel.add(emptyLabel);
-        }
-        returnToTop();
-    }
-
-    /**
-     * lists items expiring within 7 days of the current date
-     */
-    private void listItemsExpiringIn7Days() {
-        isListingAll = false;
-        isListingExpired = false;
-        isListingNonExpired = false;
-        isListingExpiringIn7Days = true;
-        clearItemListings();
-        LocalDateTime expiryDatePlusSevenDays = LocalDateTime.now().plusDays(7);
-        int counter = 1;
-        Collections.sort(consumablesManager.getConsumablesList());
-        for(Consumable c : consumablesManager.getConsumablesList()) {
-            if(expiryDatePlusSevenDays.isAfter(c.getExpiryDate())
-                    && LocalDateTime.now().isBefore(c.getExpiryDate())) {
-                String output = "";
-                output += "Item " + counter + "\n";
-                output += consumablesManager.toString(c);
-                long daysBetween = ChronoUnit.DAYS.between(LocalDateTime.now(), c.getExpiryDate());
-                if(daysBetween == 0) {
-                    output += "\nThis item expires today.";
-                } else {
-                    output += "\nThere is " + daysBetween + " days until this item expires.";
-                }
-                createNewPanelForList(output);
-                counter++;
-            }
-        }
-        if(counter == 1) {
-            emptyLabel = new JLabel("There are no items in the database expiring within 7 days.");
             mainItemListingPanel.add(emptyLabel);
         }
         returnToTop();
@@ -461,13 +408,13 @@ public class ListItemsWindow extends JDialog implements ActionListener {
      */
     private void updateListViewAfterRemoving() {
         if(isListingAll) {
-            listAllItems();
+            retrieveAllItemsFromServer();
         } else if (isListingExpired) {
-            listExpiredItems();
+            retrieveExpiredItemsFromServer();
         } else if(isListingNonExpired) {
-            listNonExpiredItems();
+            retrieveNonExpiredItemsFromServer();
         } else {
-            listItemsExpiringIn7Days();
+            retrieveItemsExpiringIn7DaysFromServer();
         }
     }
 
@@ -507,13 +454,6 @@ public class ListItemsWindow extends JDialog implements ActionListener {
      */
     private void quitProgram() throws IOException {
         try {
-            //if the file does not exist, as determined by the boolean above
-            //write a new file. if it does exist, overwrite the passed in file.
-//            if (!fileExists) {
-//                ConsumablesManager.writeFile("newFile.json");
-//            } else {
-//                ConsumablesManager.writeFile(fileName);
-//            }
             Process process = Runtime.getRuntime()
                     .exec("curl -i -H \"Content-Type: application/json\" -X GET localhost:8080/exit");
             process.getInputStream();
